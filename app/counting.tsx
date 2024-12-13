@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Button } from "react-native";
 
 export default function counting() {
   const styles = StyleSheet.create({
@@ -25,11 +25,21 @@ export default function counting() {
     timer: {
       userSelect: "none",
     },
+    title: {
+      fontSize: 24,
+      fontWeight: "bold",
+      marginBottom: 20,
+    },
   });
 
-  const [img, setImg] = useState(randomCard());
+  const intialCard = randomCard();
+  const [gameState, setGameState] = useState({
+    img: intialCard.img,
+    count: intialCard.value,
+  });
 
-  const [seconds, setSeconds] = useState(60);
+  const initialSeconds = 10;
+  const [seconds, setSeconds] = useState(initialSeconds);
   const [isRunning, setIsRunning] = useState(true);
 
   useEffect(() => {
@@ -45,17 +55,41 @@ export default function counting() {
   useEffect(() => {
     if (seconds === 0) {
       setIsRunning(false);
-      router.push("/score");
     }
   }, [seconds]);
 
-  return (
-    <Pressable style={styles.container} onPress={() => setImg(randomCard())}>
+  return isRunning ? (
+    <Pressable
+      style={styles.container}
+      onPress={() => {
+        const card = randomCard(gameState.img);
+        setGameState((prevState) => ({
+          count: prevState.count + card.value,
+          img: card.img,
+        }));
+      }}
+    >
       <View style={styles.imgContainer}>
-        <Image style={styles.image} source={img} contentFit="cover" />
+        <Image style={styles.image} source={gameState.img} contentFit="cover" />
       </View>
       <Text style={styles.timer}>{seconds}</Text>
     </Pressable>
+  ) : (
+    <View style={styles.container}>
+      <Text style={styles.title}>Count: {gameState.count}</Text>
+      <Button
+        title="Repeat"
+        onPress={() => {
+          const intialCard = randomCard();
+          setGameState({
+            count: intialCard.value,
+            img: intialCard.img,
+          });
+          setIsRunning(true);
+          setSeconds(initialSeconds);
+        }}
+      />
+    </View>
   );
 }
 
@@ -63,7 +97,7 @@ function randomArrayElem<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function randomCard(): any {
+function randomCard(currentCard?: any) {
   const cardImages = {
     clubs_02: require("@/assets/images/cards/clubs_02.png"),
     clubs_03: require("@/assets/images/cards/clubs_03.png"),
@@ -119,9 +153,23 @@ function randomCard(): any {
     spades_ace: require("@/assets/images/cards/spades_ace.png"),
   } as const;
 
-  const card =
-    cardImages[
-      randomArrayElem(Object.keys(cardImages)) as keyof typeof cardImages
-    ];
-  return card;
+  const key = randomArrayElem(Object.keys(cardImages));
+  const img = cardImages[key as keyof typeof cardImages];
+  const cardFace = key.split("_")[1].split(".")[0];
+
+  let value;
+  if (["10", "jack", "queen", "king", "ace"].includes(cardFace)) {
+    value = -1;
+  } else if (["07", "08", "09"].includes(cardFace)) {
+    value = 0;
+  } else {
+    value = 1;
+  }
+
+  // avoid returning the same card as is currently displayed
+  if (img == currentCard) {
+    return randomCard(currentCard);
+  }
+
+  return { img, value };
 }
