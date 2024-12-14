@@ -1,37 +1,31 @@
-import { randomCard } from "@/util/utils";
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 
 type Props = {
   setPlayerChoice: (value: string) => void;
+  playerActions: readonly string[];
+  dealerCard: any;
+  playerCards: any[];
+  count: number;
 };
 
-const GameBoard = ({ setPlayerChoice }: Props) => {
-  const [dealerCards, setDealerCards] = useState([randomCard().img]); // Dealer's cards
-  const [playerCards, setPlayerCards] = useState([randomCard().img]); // Player's cards
-  const [count, setCount] = useState(0); // Card counting value
-
-  // Function to simulate dealing a card
-  const dealCard = () => {
-    // Mock card and value logic (replace with real logic)
-    const randCard = randomCard();
-    setPlayerCards([...playerCards, randCard.img]);
-    setCount(count + randCard.value);
-  };
-
+const GameBoard = ({
+  setPlayerChoice,
+  playerActions,
+  dealerCard,
+  playerCards,
+  count,
+}: Props) => {
   return (
     <View style={styles.container}>
       {/* Dealer's Cards */}
       <View style={styles.dealerContainer}>
         <Text style={styles.sectionTitle}>Dealer's Cards</Text>
         <View style={styles.cardsContainer}>
-          {dealerCards.map((card, index) => (
-            <Image
-              key={index}
-              source={card} // Update path to match your assets
-              style={styles.cardImage}
-            />
-          ))}
+          <Image
+            source={dealerCard} // Update path to match your assets
+            style={styles.cardImage}
+          />
         </View>
       </View>
 
@@ -52,7 +46,7 @@ const GameBoard = ({ setPlayerChoice }: Props) => {
 
       {/* Player Actions */}
       <View style={styles.actionsContainer}>
-        {["Hit", "Stand", "Double", "Split", "Insurace"].map((name) => {
+        {playerActions.map((name) => {
           return (
             <Pressable
               key={name}
@@ -63,21 +57,6 @@ const GameBoard = ({ setPlayerChoice }: Props) => {
             </Pressable>
           );
         })}
-        {/* <Pressable style={styles.button} onPress={dealCard}>
-          <Text style={styles.buttonText}>Hit</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Stand</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Double</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Split</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Insurace</Text>
-        </Pressable> */}
       </View>
     </View>
   );
@@ -108,7 +87,8 @@ const styles = StyleSheet.create({
   actionsContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
   },
   sectionTitle: {
     fontSize: 18,

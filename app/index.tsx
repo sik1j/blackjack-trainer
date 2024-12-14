@@ -13,12 +13,12 @@ export default function Index() {
       >
         <Text style={styles.buttonText}>Counting</Text>
       </TouchableOpacity>
-      {/* <TouchableOpacity
+      <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push("/screen2")}
+        onPress={() => router.push("/deviations")}
       >
-        <Text style={styles.buttonText}>Go to Screen 2</Text>
-      </TouchableOpacity> */}
+        <Text style={styles.buttonText}>Deviations</Text>
+      </TouchableOpacity>
     </View>
   );
 }
