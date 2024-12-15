@@ -1,4 +1,4 @@
-import { randomCard } from "@/util/utils";
+import { BlackjackCard } from "@/util/blackjack";
 import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable, Button } from "react-native";
@@ -32,10 +32,10 @@ export default function counting() {
     },
   });
 
-  const intialCard = randomCard();
+  const intialCard = BlackjackCard.getCard();
   const [gameState, setGameState] = useState({
     img: intialCard.img,
-    count: intialCard.value,
+    count: intialCard.countValue as number,
   });
 
   const initialSeconds = 30;
@@ -62,11 +62,11 @@ export default function counting() {
     <Pressable
       style={styles.container}
       onPress={() => {
-        let card = randomCard();
-        while (card.img == gameState.img) card = randomCard();
+        let card = BlackjackCard.getCard();
+        while (card.img == gameState.img) card = BlackjackCard.getCard();
 
         setGameState((prevState) => ({
-          count: prevState.count + card.value,
+          count: prevState.count + card.countValue,
           img: card.img,
         }));
       }}
@@ -82,9 +82,9 @@ export default function counting() {
       <Button
         title="Repeat"
         onPress={() => {
-          const intialCard = randomCard();
+          const intialCard = BlackjackCard.getCard();
           setGameState({
-            count: intialCard.value,
+            count: intialCard.countValue,
             img: intialCard.img,
           });
           setIsRunning(true);
