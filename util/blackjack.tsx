@@ -1,12 +1,12 @@
 import { randomArrayElem } from "@/util/utils";
 import { ImageSource } from "expo-image";
 
-type Suit = "clubs" | "diamonds" | "hearts" | "spades";
-type Rank = //#region
+export type Suit = "clubs" | "diamonds" | "hearts" | "spades";
+export type Rank = //#region
   2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | "jack" | "queen" | "king" | "ace";
 //#endregion
 type CountValue = -1 | 0 | 1;
-type GameValue = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+export type GameValue = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
 
 export class BlackjackCard {
   public img: ImageSource;
@@ -104,34 +104,49 @@ export class BlackjackCard {
     return { countValue, gameValue };
   }
 
-  public static getCard(rank?: Rank, suit?: Suit): BlackjackCard {
-    const iSuit: Suit = suit
-      ? suit
+  public static getCard({
+    rank: r,
+    suit: s,
+    gameValue: gv,
+  }: { rank?: Rank; suit?: Suit; gameValue?: GameValue } = {}): BlackjackCard {
+    const suit: Suit = s
+      ? s
       : randomArrayElem(["clubs", "diamonds", "hearts", "spades"]);
-    const iRank: Rank = rank
-      ? rank
-      : randomArrayElem([
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          "jack",
-          "queen",
-          "king",
-          "ace",
-        ]);
+    let rank: Rank;
+    if (r) {
+      rank = r;
+    } else if (gv) {
+      if (gv === 10) {
+        rank = randomArrayElem([10, "jack", "queen", "king"]);
+      } else if (gv === 11) {
+        rank = "ace";
+      } else {
+        rank = gv;
+      }
+    } else {
+      rank = randomArrayElem([
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        "jack",
+        "queen",
+        "king",
+        "ace",
+      ]);
+    }
 
-    const { countValue, gameValue } = this.rankToGameValues(iRank);
+    const { countValue, gameValue } = this.rankToGameValues(rank);
 
     return new BlackjackCard(
-      this.cardsImages[iSuit][iRank],
-      iSuit,
-      iRank,
+      this.cardsImages[suit][rank],
+      suit,
+      rank,
       countValue,
       gameValue
     );

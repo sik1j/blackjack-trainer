@@ -5,8 +5,8 @@ type Props = {
   setPlayerChoice: (value: string) => void;
   playerActions: readonly string[];
   dealerCard: any;
-  playerCards: any[];
-  count: number;
+  playerCards: { card1: any; card2?: any };
+  count: string;
 };
 
 const GameBoard = ({
@@ -34,13 +34,16 @@ const GameBoard = ({
         <Text style={styles.sectionTitle}>Card Count: {count}</Text>
         <Text style={styles.sectionTitle}>Player's Cards</Text>
         <View style={styles.cardsContainer}>
-          {playerCards.map((card, index) => (
+          <Image
+            source={playerCards.card1} // Update path to match your assets
+            style={styles.cardImage}
+          />
+          {playerCards.card2 && (
             <Image
-              key={index}
-              source={card} // Update path to match your assets
+              source={playerCards.card2} // Update path to match your assets
               style={styles.cardImage}
             />
-          ))}
+          )}
         </View>
       </View>
 

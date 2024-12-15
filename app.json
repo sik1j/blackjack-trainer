@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.crazysquid.blackjack_trainer"
     },
     "web": {
       "bundler": "metro",
@@ -35,7 +36,16 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "baseUrl": "/blackjack-trainer"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2f8da335-ef1d-487e-ba09-1aabc55ba1af"
+      }
     }
   }
 }
